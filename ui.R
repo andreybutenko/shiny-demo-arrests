@@ -30,7 +30,7 @@ shinyUI(fluidPage(
        
       selectInput('crime_type',
                    label = 'Crime Type',
-                   choices = colnames(USArrests))
+                   choices = colnames(USArrests)[-3])
     ),
     
     # mainPanel is the the other part of a sidebarLayout that takes up the most space.

@@ -8,6 +8,11 @@ The user will select a region and a crime type and will see a bar plot of crime 
 
 The best part is that the user will be able to create their own custom plots without needing to write any R code themselves! 
 
+## Links:
+
+- [My slides on this demo.](https://docs.google.com/presentation/d/1JmsdAFdszzb4P4I3lxWRBLSZ89Jx_vbIu3p4YVOfAdc/edit?usp=sharing)
+- [Live Shiny app. See what the result looks like!](https://andreybutenko.shinyapps.io/shiny-demo-arrests/)
+
 ## Datasets
 
 We are using the `USArrests` and `state.region` datasets built into R:
