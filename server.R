@@ -9,8 +9,29 @@ library(ggplot2)
 
 # Let's set up a dataframe that has USArrest data and region data
 arrests <- as.data.frame(USArrests)
-arrests$region <- state.region
+arrests$region_name <- state.region
 arrests$state <- rownames(arrests)
+
+# First, let's create a function that generates the plot we want agnostic of Shiny.
+# It should take in our two inputs -- region and crime_type -- and return a plot
+# of crime rates for that crime within that region.
+generate_crime_plot <- function(region, crime_type) {
+  arrests %>% 
+    # Let's filter to the specified region:
+    filter(region_name == region) %>% 
+    
+    # Now, let's create a plot!
+    # We are creating a bar plot. We add `stat = 'identity'` as a parameter, since we want
+    # the y-axis to represent the number in the dataframe.
+    # Since our y-axis is variable based on inputs, we cannot define it with `aes(...)` like we
+    # usually do. Instead, we use `aes_string(...)`
+    ggplot() + 
+    geom_bar(aes_string(x = 'state', y = crime_type), stat = 'identity') +
+    ggtitle(paste(crime_type, 'rates by state in', region, 'region'))
+}
+# Sample calls:
+#  - generate_crime_plot('West', 'Assault')
+#  - generate_crime_plot('South', 'Murder')
 
 # Use shinyServer() function to set up the server part of a Shiny app.
 # The server part of a Shiny app is what manipulates the data and generates plots for display.
@@ -28,19 +49,7 @@ shinyServer(function(input, output) {
   # We are creating an output called `crime_plot`
   # Since it is a plot, we surround the value in the reactive expresssion `renderPlot({ ... })`
   output$crime_plot <- renderPlot({
-    
-    # First, let's filter to the specified region:
-    arrests %>% 
-      filter(region == input$region) %>% 
-    
-    # Second, let's create a plot!
-    # We are creating a bar plot. We add `stat = 'identity'` as a parameter, since we want
-    # the y-axis to represent the number in the dataframe.
-    # Since our y-axis is variable based on inputs, we cannot define it with `aes(...)` like we
-    # usually do. Instead, we use `aes_string(...)`
-      ggplot() + 
-      geom_bar(aes_string(x = 'state', y = input$crime_type), stat = 'identity') +
-      ggtitle(paste(input$crime_type, 'rates by state in', input$region, 'region'))
+    generate_crime_plot(input$region, input$crime_type)
   })
   
 })
